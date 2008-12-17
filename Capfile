@@ -2,6 +2,8 @@
 # Author: Joshua Timberman <joshua@hjksolutions.com>
 #
 # Copyright 2008, HJK Solutions
+# Portions originally written by spiceee, 
+#   http://snippets.dzone.com/posts/show/6372
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,18 +17,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# role :app, "app-prod.example.com", "db-prod.example.com"
 role :app, "app-test.example.com"
 
-ree_dl_id = "47937"
-ree_version = "1.8.6-20081205"
-# Newer version, but has libtool error compiling google-perftools.
-# See http://groups.google.com/group/emm-ruby/browse_thread/thread/f4c63a64e8c00067
-#ree_dl_id = "48623"
-#ree_version = "1.8.6-20081215"
+# Change to latest release or desired prior version for download link below.
+ree_dl_id = "48623"
+ree_version = "1.8.6-20081215"
 
 ree_tarball = "ruby-enterprise-#{ree_version}.tar.gz"
 ree_source = "http://rubyforge.org/frs/download.php/#{ree_dl_id}/#{ree_tarball}"
 ree_path = "/srv/ree"
+# Change to the location of the "system" installed Ruby.
 old_gem = "/usr/bin/gem"
 new_gem = "#{ree_path}-#{ree_version}/bin/gem"
 
@@ -48,6 +49,8 @@ desc "Install System Gems in REE"
 task :ree_gems, :roles => :app do
   oldgems = capture "#{old_gem} list"
   newgems = capture "#{new_gem} list"
+  # oldgems.each block written by spiceee.
+  # http://snippets.dzone.com/posts/show/6372
   oldgems.each do |line|
     matches = line.match(/([A-Z].+) \(([0-9\., ]+)\)/i)
     if matches 
@@ -65,7 +68,7 @@ task :ree_gems, :roles => :app do
         end
       end
     end
-  end
+  end # oldgems.each
 end
 
 desc "Install REE and system gems"
