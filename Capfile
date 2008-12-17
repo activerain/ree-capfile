@@ -59,7 +59,7 @@ task :ree_gems, :roles => :app do
       versions = matches[2]
       versions.split(', ').each do |ver|
         cmd = "#{new_gem} install #{gem_name} --version #{ver}" # --source #{gem_source}"
-        # rubygems-update is "installed" because RubyGems 1.3.1 comes with REE.
+        # rubygems-update is "installed" because REE includes RubyGems 1.3.1.
         if newgems =~ /#{gem_name} \(.*#{ver}.*\)/i || gem_name =~ /rubygems-update/
         then
           logger.info("#{gem_name} #{ver} is already installed. Skipping.")
