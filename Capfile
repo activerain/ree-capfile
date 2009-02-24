@@ -21,15 +21,21 @@
 role :app, "app-test.example.com"
 
 # Change to latest release or desired prior version for download link below.
-ree_dl_id = "48623"
-ree_version = "1.8.6-20081215"
+ree_dl_id = "51100"
+ree_version = "1.8.6-20090201"
 
 ree_tarball = "ruby-enterprise-#{ree_version}.tar.gz"
 ree_source = "http://rubyforge.org/frs/download.php/#{ree_dl_id}/#{ree_tarball}"
 ree_path = "/srv/ree"
-# Change to the location of the "system" installed Ruby.
-old_gem = "/usr/bin/gem"
-new_gem = "#{ree_path}-#{ree_version}/bin/gem"
+# -S old_gem="system" to use the system gem, otherwise
+# specify the location of the old gem command (for upgrading REE)
+case old_gem
+when "system"
+  set(:old_gem, "/usr/bin/gem")
+else
+  set(:old_gem, old_gem)
+end
+set(:new_gem, "#{ree_path}-#{ree_version}/bin/gem")
 
 # Uncomment to use the local gems server, also uncomment cmd in ree_gems task.
 #gem_source = "http://gems"
@@ -58,7 +64,7 @@ task :ree_gems, :roles => :app do
       gem_name = matches[1]
       versions = matches[2]
       versions.split(', ').each do |ver|
-        cmd = "#{new_gem} install #{gem_name} --version #{ver}" # --source #{gem_source}"
+        cmd = "#{new_gem} install #{gem_name} --version #{ver}" --no-ri --no-rdoc # --source #{gem_source}"
         # rubygems-update is "installed" because REE includes RubyGems 1.3.1.
         if newgems =~ /#{gem_name} \(.*#{ver}.*\)/i || gem_name =~ /rubygems-update/
         then
