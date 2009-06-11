@@ -60,7 +60,7 @@ desc "Get a list of the installed ree versions"
 task :ree_show_versions, :roles => :app do
   dirs = capture "ls -ld #{ree_path}-*"
   versions = dirs.map do |l|
-    matches = l.match(/#{ree_path}-(\d+)/)
+    matches = l.match(/#{ree_path}-(.*)$/)
     matches ? matches[1] : nil
   end.compact.sort
   logger.info("Installed ree versions: #{versions.join(', ')}")
