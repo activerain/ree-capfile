@@ -47,8 +47,13 @@ task :ree_install, :roles => :app do
   run("sh -c '(cd /tmp/ree; wget #{ree_source} 2>/dev/null)'")
   run("sh -c '(cd /tmp/ree; tar zxf #{ree_tarball})'")
   sudo("sh -c '(cd /tmp/ree/ruby-enterprise-#{ree_version}; ./installer -a #{ree_path}-#{ree_version})'")
-  sudo("ln -sf #{ree_path}-#{ree_version} #{ree_path}")
   sudo("rm -rf /tmp/ree")
+end
+
+desc "Effectivelly switch the ree softlink to use a different ree version"
+task :ree_switch, :roles => :app do
+  logger.info("Switching ree to version #{ree_version}")
+  sudo("ln -sf #{ree_path}-#{ree_version} #{ree_path}")
 end
 
 desc "Install System Gems in REE"
@@ -81,4 +86,10 @@ desc "Install REE and system gems"
 task :ree_install_all, :roles => :app do
   ree_install
   ree_gems
+end
+
+desc "Install REE and system gems"
+task :ree_install_all_and_switch, :roles => :app do
+  ree_install_all
+  ree_switch
 end
