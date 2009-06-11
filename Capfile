@@ -56,6 +56,16 @@ task :ree_switch, :roles => :app do
   sudo("ln -sf #{ree_path}-#{ree_version} #{ree_path}")
 end
 
+desc "Get a list of the installed ree versions"
+task :ree_show_versions, :roles => :app do
+  dirs = capture "ls -ld #{ree_path}-*"
+  versions = dirs.map do |l|
+    matches = l.match(/#{ree_path}-(\d+)/)
+    matches ? matches[1] : nil
+  end.compact.sort
+  logger.info("Installed ree versions: #{versions.join(', ')}")
+end
+
 desc "Install System Gems in REE"
 task :ree_gems, :roles => :app do
   oldgems = capture "#{old_gem} list"
@@ -88,7 +98,7 @@ task :ree_install_all, :roles => :app do
   ree_gems
 end
 
-desc "Install REE and system gems"
+desc "Install REE, system gems and switch to latest version."
 task :ree_install_all_and_switch, :roles => :app do
   ree_install_all
   ree_switch
