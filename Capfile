@@ -50,6 +50,12 @@ task :ree_install, :roles => :app do
   sudo("rm -rf /tmp/ree")
 end
 
+desc "Remove an installed version of ree"
+task :ree_uninstall, :roles => :app do
+  logger.info("Removing ree version #{version}")
+  sudo("rm -rf #{ree_path}-#{version}")
+end
+
 desc "Effectivelly switch the ree softlink to use a different ree version"
 task :ree_switch, :roles => :app do
   logger.info("Switching ree to version #{ree_version}")
